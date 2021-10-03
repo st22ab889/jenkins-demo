@@ -1,11 +1,13 @@
 node("hello-ops"){
-    stage('Clone') {
-        echo "1.Clone Stage"
-        git url: "https://github.com/st22ab889/jenkins-demo.git"
+    stage('Prepare') {
+        echo "1.Prepare Stage"
+        // BRANCH_NAME 这个变量仅在多分支管线中起作用
+        // BRANCH_NAME 对于多分支项目,此名称将设置为正在构建的分支的名称.例如,如果希望从主分支而不是功能分支部署到生产环境.
+        echo 'Pulling...' + env.BRANCH_NAME
+        checkout scm
         script {
-            env.BRANCH_NAME = "master"
             build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-            if ("${env.BRANCH_NAME}" != 'master') {
+            if (env.BRANCH_NAME != 'master') {
                 build_tag = "${env.BRANCH_NAME}-${build_tag}"
             }
         }
@@ -38,18 +40,19 @@ node("hello-ops"){
                  ]
             ]
         )
-        echo "This is a deploy step to ${userInput.Env}"
+        echo "This is a deploy step to  ${userInput} Env"
         sh "sed -i 's/<BUILD_TAG>/${build_tag}/' k8s-jenkins-go-demo.yaml"
         
-        if (userInput.Env == "Dev") {
+        if (env.BRANCH_NAME == "Dev") {
             input "please confirm deploy to DEV env ?"
-        } else if (userInput.Env == "QA"){
+        } else if (env.BRANCH_NAME == "QA"){
             input "please confirm deploy to QA env ?"
         } else {
              input "please confirm deploy to Prod env ?"
         }
         sh "sed -i 's/<BRANCH_NAME>/${env.BRANCH_NAME}/' k8s-jenkins-go-demo.yaml"
-
+        
+        sh "cat k8s-jenkins-go-demo.yaml"
         sh "kubectl apply -f k8s-jenkins-go-demo.yaml"
     }
 }
