@@ -15,13 +15,13 @@ node("hello-ops"){
     }
     stage('Build') {
         echo "3.Build Docker Image Stage"
-        sh "docker build -t aaron/jenkins-demo:${build_tag} ."
+        sh "docker build -t st22ab889/jenkins-demo:${build_tag} ."
     }
     stage('Push') {
         echo "4.Push Docker Image Stage"
         withCredentials([usernamePassword(credentialsId: 'docekrAuth', passwordVariable: 'dockerPassword', usernameVariable: 'dockerUser')]) {
             sh "docker login -u ${dockerUser} -p ${dockerPassword}"
-            sh "docker push aaron/jenkins-demo:${build_tag}"
+            sh "docker push st22ab889/jenkins-demo:${build_tag}"
         }
     }
     stage('Deploy') {
