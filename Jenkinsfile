@@ -38,12 +38,12 @@ node("hello-ops"){
                  ]
             ]
         )
-        echo "This is a deploy step to ${userInput.Env}"
+        echo "This is a deploy step to ${userInput} Env"
         sh "sed -i 's/<BUILD_TAG>/${build_tag}/' k8s-jenkins-go-demo.yaml"
         
-        if (userInput.Env == "Dev") {
+        if (userInput == "Dev") {
             input "please confirm deploy to DEV env ?"
-        } else if (userInput.Env == "QA"){
+        } else if (userInput == "QA"){
             input "please confirm deploy to QA env ?"
         } else {
              input "please confirm deploy to Prod env ?"
