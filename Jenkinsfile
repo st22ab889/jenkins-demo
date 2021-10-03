@@ -51,6 +51,6 @@ node("hello-ops"){
         sh "sed -i 's/<BRANCH_NAME>/${env.BRANCH_NAME}/' k8s-jenkins-go-demo.yaml"
 		
         sh "cat k8s-jenkins-go-demo.yaml"
-        sh "kubectl apply -f k8s-jenkins-go-demo.yaml"
+        sh "kubectl apply -f k8s-jenkins-go-demo.yaml --record"
     }
 }
