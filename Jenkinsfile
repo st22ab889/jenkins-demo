@@ -3,9 +3,9 @@ node("hello-ops"){
         echo "1.Clone Stage"
         git url: "https://github.com/st22ab889/jenkins-demo.git"
         script {
-            BRANCH_NAME = "master"
+            env.BRANCH_NAME = "master"
             build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-            if (env.BRANCH_NAME != 'master') {
+            if ("${env.BRANCH_NAME}" != 'master') {
                 build_tag = "${env.BRANCH_NAME}-${build_tag}"
             }
         }
@@ -47,7 +47,7 @@ node("hello-ops"){
         } else {
              input "please confirm deploy to Prod env ?"
         }
-        sh "sed -i 's/<BRANCH_NAME>/${env.BRANCH_NAME}/' k8s.yaml"
+        sh "sed -i 's/<BRANCH_NAME>/${env.BRANCH_NAME}/' k8s-jenkins-go-demo.yaml"
 
         sh "kubectl apply -f k8s-jenkins-go-demo.yaml"
     }
