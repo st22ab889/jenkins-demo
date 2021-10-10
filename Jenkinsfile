@@ -1,7 +1,7 @@
 node("hello-ops"){
     stage('Prepare') {
         echo "1.Prepare Stage"
-        //
+        // checkout scm命令⽤来检出代码仓库中当前分⽀的代码
         checkout scm
         script {
             build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
